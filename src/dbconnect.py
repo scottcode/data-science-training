@@ -54,9 +54,14 @@ def connect(dbcred_file, section=SECTION):
         except:
             print("""Can't find credentials""")
             raise
-    conn = psycopg2.connect(**conf)
-    conn.autocommit = True
-    return conn
+    db_engine = create_engine(
+        'postgresql://{user}:{password}@{host}:{port}/{database}'.format(
+            **fetchDBCredentials(dbcred_file, section=section)
+        )
+    ).execution_options(autocommit=True)
+    #conn = psycopg2.connect(**conf)
+    #conn.autocommit = True
+    return db_engine
 
 
 def register_sql_magic():
